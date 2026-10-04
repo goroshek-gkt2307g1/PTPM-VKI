@@ -1,0 +1,104 @@
+Всего написано 29 тестов: 11 для своей лабы и 18 для модуля доставки.
+
+Результаты для своей лабораторной
+
+(venv) PS C:\Users\goroshek\Desktop\колледж\4 курс\Тестирование\PTPM-VKI\tests> python -m unittest test_my_project -v
+test_empty_login (test_my_project.TestRegistry.test_empty_login) ... ok
+test_less_than_7 (test_my_project.TestRegistry.test_less_than_7) ... ok
+test_login_in_blacklist (test_my_project.TestRegistry.test_login_in_blacklist) ... ok
+test_login_invalid_character (test_my_project.TestRegistry.test_login_invalid_character) ... ok
+test_login_less_than_5 (test_my_project.TestRegistry.test_login_less_than_5) ... ok
+test_pass_invalid_character (test_my_project.TestRegistry.test_pass_invalid_character) ... ok
+test_pass_no_digits (test_my_project.TestRegistry.test_pass_no_digits) ... ok
+test_pass_no_down_character (test_my_project.TestRegistry.test_pass_no_down_character) ... ok
+test_pass_no_special_character (test_my_project.TestRegistry.test_pass_no_special_character) ... ok
+test_pass_no_up_character (test_my_project.TestRegistry.test_pass_no_up_character) ... ok
+test_pass_not_match (test_my_project.TestRegistry.test_pass_not_match) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.002s
+
+OK
+
+Всё прошло успешно в своей лабе
+
+
+
+Результаты для модуля доставки
+(venv) PS C:\Users\goroshek\Desktop\колледж\4 курс\Тестирование\PTPM-VKI\tests> python -m unittest test_delivery -v  
+test_base_type (test_delivery.TestDelivery.test_base_type) ... ok
+test_danger_type (test_delivery.TestDelivery.test_danger_type) ... ok
+test_distance_more_5000 (test_delivery.TestDelivery.test_distance_more_5000) ... ok
+test_express_is_more_not_express (test_delivery.TestDelivery.test_express_is_more_not_express) ... FAIL
+test_express_short_distance_not_zero_days (test_delivery.TestDelivery.test_express_short_distance_not_zero_days) ... FAIL
+test_hrupk_type (test_delivery.TestDelivery.test_hrupk_type) ... ok
+test_max_distance_norm (test_delivery.TestDelivery.test_max_distance_norm) ... ok
+test_max_weight_norm (test_delivery.TestDelivery.test_max_weight_norm) ... ok
+test_min_distance_norm (test_delivery.TestDelivery.test_min_distance_norm) ... ok
+test_min_one_day (test_delivery.TestDelivery.test_min_one_day) ... ok
+test_min_weight_norm (test_delivery.TestDelivery.test_min_weight_norm) ... ok
+test_unknown_type (test_delivery.TestDelivery.test_unknown_type) ... ok
+test_weight_coeff_for_5 (test_delivery.TestDelivery.test_weight_coeff_for_5) ... FAIL
+test_weight_coeff_for_more_20 (test_delivery.TestDelivery.test_weight_coeff_for_more_20) ... ok
+test_weight_less_01 (test_delivery.TestDelivery.test_weight_less_01) ... ok
+test_weight_more_50 (test_delivery.TestDelivery.test_weight_more_50) ... ok
+test_zero_distance (test_delivery.TestDelivery.test_zero_distance) ... ok
+test_zero_weight (test_delivery.TestDelivery.test_zero_weight) ... ok
+
+======================================================================
+FAIL: test_express_is_more_not_express (test_delivery.TestDelivery.test_express_is_more_not_express)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\goroshek\Desktop\колледж\4 курс\Тестирование\PTPM-VKI\tests\test_delivery.py", line 82, in test_express_is_more_not_express
+    self.assertGreater(cost1, cost2)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 350 not greater than 700
+
+======================================================================
+FAIL: test_express_short_distance_not_zero_days (test_delivery.TestDelivery.test_express_short_distance_not_zero_days)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\goroshek\Desktop\колледж\4 курс\Тестирование\PTPM-VKI\tests\test_delivery.py", line 92, in test_express_short_distance_not_zero_days
+    self.assertEqual(data, "2026-09-04")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2026-09-03' != '2026-09-04'
+- 2026-09-03
+?          ^
++ 2026-09-04
+?          ^
+
+
+======================================================================
+FAIL: test_weight_coeff_for_5 (test_delivery.TestDelivery.test_weight_coeff_for_5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\goroshek\Desktop\колледж\4 курс\Тестирование\PTPM-VKI\tests\test_delivery.py", line 71, in test_weight_coeff_for_5
+    self.assertEqual(cost, 840)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 700 != 840
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.006s
+
+FAILED (failures=3)
+
+
+3 теста из 18 не прошли проверку.
+
+1. Тест test_weight_coeff_for_5 - тест применения коэффициента при весе ровно 5.0 кг
+Строка в коде - 25
+Я считаю, что эта строка ломает ОР, потому что при весе 4.9 надбавки нет, при весе 5.1 надрабка уже есть, но сам вес 5.0 будто бы подразумевает, что он должен находиться в категории, когда надбавка уже должна быть. Ведь такие категории тут: 0.1-5, 5-20, 20-...
+Предлагаю, чтобы надбавка начиналась с "weight >= 5.0"
+    if weight >= 5.0 and weight < 20.0:
+
+2. Тест test_express_short_distance_not_zero_days - тест при короткой дистанции и экспрессе, что дата доставки не равна дате заказа
+Строка в коде - 44
+Я считаю, что строка ломает ОР, потому что при короткой дистанции (меньше 500 км) количество дней рассчитывается как max(1, distance // 500) и равно 1 дню. Далее для экспресс-доставки применяется целочисленное деление на 2: 1 // 2 = 0. В результате дата доставки становится равной дате отправки, то есть посылка "доставляется" в день заказа, что нарушает бизнес-логику: даже экспресс не может доставить посылку за 0 дней, минимальный срок - 1 день.
+Предлагаю, чтобы после деления пополам срок не мог стать меньше 1 дня:
+    days_needed = max(1, days_needed // 2) 
+
+3. Тест test_express_is_more_not_express - тест, что экспресс-доставка стоит дороже обычной
+Строка в коде - 36
+Я считаю, что строка ломает ОР, потому что для экспресс-доставки применяется коэффициент total_cost *= 0.5, то есть стоимость уменьшается вдвое. Это противоречит смыслу экспресс-доставки: ускоренная доставка должна быть дороже обычной, так как требует более быстрой транспортировки. Фактически по коду экспресс стоит 350 руб., а обычная доставка - 700 руб., что будто странно
+Предалагаю заменить понижающий коэфф на повышающий
+    total_cost *= 1.5
